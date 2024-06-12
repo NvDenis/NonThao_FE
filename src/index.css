@@ -1,0 +1,20 @@
+:root {
+  --height-header: 70px;
+  --height-footer: 50px;
+  --bg-color-header: white;
+  --bg-color-main-body: #f1f2f3f4;
+  --blur-primary: #1677ff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+
+html {
+  font-family: "Roboto", sans-serif;
+  scroll-behavior: smooth;
+  font-size: 16px;
+}

@@ -1,0 +1,5 @@
+.header {
+  background-color: var(--bg-color-header);
+  height: var(--height-header);
+  padding: 0 40px;
+}
