@@ -6,8 +6,21 @@ const Introduce = () => {
   return (
     <Row className={styles.container}>
       <Col
+        xs={{
+          span: 24,
+          order: 1,
+        }}
+        md={{
+          span: 24,
+          order: 1,
+        }}
+        sm={{
+          span: 24,
+          order: 1,
+        }}
         lg={{
           span: 24,
+          order: 1,
         }}
         xl={{
           span: 12,
@@ -15,8 +28,8 @@ const Introduce = () => {
         className={styles.containerLeft}
       >
         <div className={styles.wrapperLeft}>
-          <Typography.Title>Nón thảo</Typography.Title>
-          <Typography.Text style={{ width: "100%", display: "inline-block", marginBottom: "10px" }}>
+          <Typography.Title className={styles.title}>Nón thảo</Typography.Title>
+          <Typography.Text className={styles.desc}>
             Nón được hoàn thiện với chất lượng cao, giá thành rẻ, phù hợp với mọi lứa tuổi
           </Typography.Text>
           <Button type="primary" href="#products">
@@ -30,6 +43,7 @@ const Introduce = () => {
         }}
         xl={{
           span: 12,
+          order: 1,
         }}
         className={styles.containerRight}
       >

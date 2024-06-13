@@ -12,7 +12,7 @@ const onFinishFailed = (errorInfo) => {
 const Login = () => {
   return (
     <div className={styles.container}>
-      <Card style={{ width: "40%", maxWidth: "600px" }}>
+      <Card className={styles.cardContainer}>
         <Typography.Title>Đăng nhập</Typography.Title>
         <Divider />
         <Form

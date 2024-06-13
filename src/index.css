@@ -4,6 +4,7 @@
   --bg-color-header: white;
   --bg-color-main-body: #f1f2f3f4;
   --blur-primary: #1677ff;
+  --width-container: 1360px;
 }
 
 * {

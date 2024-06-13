@@ -1,10 +1,11 @@
 import { Button, Col, Divider, Dropdown, Input, Row, Space, Typography } from "antd";
 import styles from "./Header.module.css";
 import Title from "antd/es/typography/Title";
-import { ShoppingCartOutlined } from "@ant-design/icons";
+import { MenuOutlined, SearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { toggleCartDrawer } from "../../redux/features/toggle/toggleSlice";
+import { toggleCartDrawer, toggleMenuMobile } from "../../redux/features/toggle/toggleSlice";
 import { useDispatch } from "react-redux";
+const { Search } = Input;
 
 const items = [
   {
@@ -25,37 +26,54 @@ const Header = () => {
   const dispatch = useDispatch();
   return (
     <div className={styles.header}>
-      <Row gutter={16} align={"middle"}>
-        <Col span={6}>
-          <Link to="/">
-            <Title>Logo</Title>
-          </Link>
-        </Col>
-        <Col span={12}>
-          <Input placeholder="Basic usage" />
-        </Col>
-        <Col span={6}>
-          <Space split={<Divider type="vertical" />}>
-            <ShoppingCartOutlined
-              style={{ fontSize: 24, cursor: "pointer" }}
-              onClick={() => dispatch(toggleCartDrawer())}
-            />
-
-            <Dropdown
-              menu={{
-                items,
-              }}
-              placement="bottomRight"
-              arrow
-              trigger={["click"]}
-            >
-              <Typography.Link>Tài khoản</Typography.Link>
-            </Dropdown>
-          </Space>
-
-          <Divider type="vertical" />
-        </Col>
-      </Row>
+      <div className={styles.headerContainer}>
+        <Row gutter={16} align={"middle"} className={styles.headerWrapper}>
+          <Col span={6}>
+            <Link to="/">
+              <Title className={styles.logo}>Logo</Title>
+            </Link>
+            <div onClick={() => dispatch(toggleMenuMobile())} className={styles.toggleContainer}>
+              <MenuOutlined className={styles.btnToggle} />
+              <Typography.Title level={5} className={styles.titleToggle}>
+                MENU
+              </Typography.Title>
+            </div>
+          </Col>
+          <Col
+            xl={{
+              span: 12,
+            }}
+          >
+            <Search placeholder="Nhập tên hoặc mã sản phẩm..." className={styles.search} loading enterButton />
+          </Col>
+          <Col span={6}>
+            <Space>
+              <div className={styles.containerIconSearch}>
+                <SearchOutlined className={styles.searchIcon} />
+                <Divider type="vertical" />
+              </div>
+              <ShoppingCartOutlined
+                style={{ fontSize: 24, cursor: "pointer" }}
+                onClick={() => dispatch(toggleCartDrawer())}
+              />
+              <div className={styles.authDropdownContainer}>
+                <Divider type="vertical" />
+                <Dropdown
+                  className={styles.authDropdown}
+                  menu={{
+                    items,
+                  }}
+                  placement="bottomRight"
+                  arrow
+                  trigger={["click"]}
+                >
+                  <Typography.Link>Tài khoản</Typography.Link>
+                </Dropdown>
+              </div>
+            </Space>
+          </Col>
+        </Row>
+      </div>
     </div>
   );
 };

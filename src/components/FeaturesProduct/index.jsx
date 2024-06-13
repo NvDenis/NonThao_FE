@@ -2,6 +2,7 @@ import Carousel from "react-multi-carousel";
 import { Link } from "react-router-dom";
 import Meta from "antd/es/card/Meta";
 import { Card, Divider, Image, Typography } from "antd";
+import styles from "./FeaturesProduct.module.css";
 
 const FeaturesProduct = () => {
   const products = [
@@ -44,21 +45,20 @@ const FeaturesProduct = () => {
 
   const responsive = {
     superLargeDesktop: {
-      // the naming can be any, depends on you.
-      breakpoint: { max: 4000, min: 3000 },
-      items: 5,
+      breakpoint: { max: 4000, min: 1500 },
+      items: 6,
     },
     desktop: {
-      breakpoint: { max: 3000, min: 1024 },
+      breakpoint: { max: 1500, min: 1000 },
       items: 5,
     },
     tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
+      breakpoint: { max: 1000, min: 575 },
+      items: 3,
     },
     mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
+      breakpoint: { max: 575, min: 0 },
+      items: 2,
     },
   };
   return (
@@ -68,14 +68,8 @@ const FeaturesProduct = () => {
       <Carousel responsive={responsive}>
         {products.map((item) => (
           <Link key={item._id} to={"product/" + item._id}>
-            <Card
-              hoverable
-              style={{
-                width: 240,
-                margin: "0 0 10px 5px",
-              }}
-            >
-              <Image width={200} preview={false} src={item.img} />
+            <Card className={styles.cardContainer} hoverable>
+              <Image className={styles.img} preview={false} src={item.img} />
               <Meta title="Europe Street beat" description="100.000đ" />
             </Card>
           </Link>

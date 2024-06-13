@@ -1,5 +1,60 @@
 .header {
   background-color: var(--bg-color-header);
   height: var(--height-header);
-  padding: 0 40px;
+}
+
+.headerContainer {
+  height: 100%;
+  max-width: var(--width-container);
+  margin: 0 auto;
+}
+
+.headerWrapper {
+  height: 100%;
+}
+
+.containerIconSearch,
+.toggleContainer {
+  display: none;
+}
+
+.titleToggle,
+.logo {
+  margin: 0 !important;
+}
+
+.className {
+  display: inline-block;
+}
+
+@media only screen and (max-width: 575px) {
+  .header {
+    background-color: var(--bg-color-header);
+    height: var(--height-header);
+  }
+
+  .authDropdownContainer,
+  .search,
+  .authDropdown,
+  .logo {
+    display: none;
+  }
+
+  .containerIconSearch {
+    display: block;
+  }
+  .toggleContainer {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+}
+
+@media only screen and (max-width: 1360px) {
+  .headerContainer {
+    margin: 0 20px;
+  }
+  .headerWrapper {
+    justify-content: space-between;
+  }
 }

@@ -1,0 +1,22 @@
+.cardContainer {
+  width: 240px;
+  margin: 0 0 10px 5px;
+}
+
+.desc {
+  text-align: center;
+  width: 100%;
+  display: inline-block;
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+@media only screen and (max-width: 575px) {
+  .cardContainer {
+    width: 180px;
+  }
+
+  .img {
+    height: 180px;
+  }
+}

@@ -3,9 +3,8 @@ import Header from "./components/Header";
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import Footer from "./components/Footer";
 import styles from "./App.module.css";
-import { Breadcrumb } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
 import CartDrawer from "./components/CartDrawer";
+import MenuMobile from "./components/MenuMobile";
 
 const items = [
   {
@@ -56,10 +55,13 @@ function App() {
     <>
       <Header />
       <main className={styles.mainBody}>
-        <Outlet></Outlet>
+        <div className={styles.container}>
+          <Outlet></Outlet>
+        </div>
       </main>
       <Footer />
       <CartDrawer />
+      <MenuMobile />
     </>
   );
 }
