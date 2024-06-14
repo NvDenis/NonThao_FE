@@ -4,6 +4,7 @@ import Meta from "antd/es/card/Meta";
 import { Link } from "react-router-dom";
 import Filter from "../../components/Filter";
 import Carousel from "react-multi-carousel";
+import styles from "./CategoryDetail.module.css";
 
 const products = [
   {
@@ -37,7 +38,7 @@ const CategoryDetail = () => {
     },
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
-      items: 5,
+      items: 4,
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },
@@ -62,15 +63,9 @@ const CategoryDetail = () => {
             />
             <Carousel responsive={responsive}>
               {products.map((item) => (
-                <Link key={item._id} to={"product/" + item._id}>
-                  <Card
-                    hoverable
-                    style={{
-                      width: 240,
-                      margin: "0 0 10px 5px",
-                    }}
-                  >
-                    <Image width={200} preview={false} src={item.img} />
+                <Link key={item._id} to={"/product/" + item._id}>
+                  <Card hoverable className={styles.cardContainer}>
+                    <Image preview={false} src={item.img} />
                     <Meta title="Europe Street beat" description="100.000đ" />
                   </Card>
                 </Link>

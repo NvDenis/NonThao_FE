@@ -46,7 +46,7 @@ const FeaturesProduct = () => {
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 1500 },
-      items: 6,
+      items: 5,
     },
     desktop: {
       breakpoint: { max: 1500, min: 1000 },

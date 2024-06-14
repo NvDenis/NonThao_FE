@@ -70,16 +70,7 @@ const Filter = () => {
         onChange={onChange}
       >
         <Row gutter={[16, 8]}>
-          <Menu
-            style={{
-              width: 256,
-            }}
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
-            mode={mode}
-            theme={theme}
-            items={items}
-          />
+          <Menu defaultSelectedKeys={["1"]} defaultOpenKeys={["sub1"]} mode={mode} theme={theme} items={items} />
         </Row>
       </Checkbox.Group>
     </Card>
