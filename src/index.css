@@ -1,9 +1,10 @@
 :root {
-  --height-header: 70px;
+  --height-header: 160px;
+  --height-header-mobile: 120px;
   --height-footer: 50px;
   --bg-color-header: white;
   --bg-color-main-body: #f1f2f3f4;
-  --blur-primary: #1677ff;
+  --blue-primary: #1677ff;
   --width-container: 1360px;
 }
 
@@ -18,4 +19,8 @@ html {
   font-family: "Roboto", sans-serif;
   scroll-behavior: smooth;
   font-size: 16px;
+}
+
+.ant-drawer {
+  z-index: 9999;
 }

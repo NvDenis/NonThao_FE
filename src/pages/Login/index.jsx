@@ -1,15 +1,31 @@
-import { Card, Divider, Typography } from "antd";
+import { Card, Divider, Typography, message } from "antd";
 import styles from "./Login.module.css";
 import { Button, Checkbox, Form, Input } from "antd";
-import { Link } from "react-router-dom";
-const onFinish = (values) => {
-  console.log("Success:", values);
-};
-const onFinishFailed = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
+import { Link, useNavigate } from "react-router-dom";
+import { callLogin } from "../../services/api";
+import { handleLogin } from "../../redux/features/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispath = useDispatch();
+
+  const onFinish = async (values) => {
+    try {
+      const res = await callLogin(values);
+      if (res.vcode == 0) {
+        dispath(handleLogin(res.data));
+        message.success("Đăng nhập thành công");
+        navigate("/");
+      } else message.error(res.msg);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
   return (
     <div className={styles.container}>
       <Card className={styles.cardContainer}>

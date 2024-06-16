@@ -1,15 +1,25 @@
-import { Card, Divider, Typography } from "antd";
+import { Card, Divider, Typography, message } from "antd";
 import styles from "./Register.module.css";
 import { Button, Form, Input } from "antd";
-import { Link } from "react-router-dom";
-const onFinish = (values) => {
-  console.log("Success:", values);
-};
-const onFinishFailed = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
+import { Link, useNavigate } from "react-router-dom";
+import { callRegister } from "../../services/api";
+import { useDispatch } from "react-redux";
+import { handleLogin } from "../../redux/features/user/userSlice";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const onFinish = async (values) => {
+    const res = await callRegister(values);
+    if (res.vcode == 0) {
+      message.success("Đăng ký thành công");
+      dispatch(handleLogin(res.data));
+      navigate("/");
+    } else message.error(res.message);
+  };
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
   return (
     <div className={styles.container}>
       <Card className={styles.cardContainer}>

@@ -3,3 +3,21 @@
   border-radius: 10px;
   padding: 20px;
 }
+
+.btn {
+  padding: 20px;
+  border-radius: 0;
+}
+
+.container :global(.ant-input-number-group-wrapper) {
+  max-width: 150px;
+}
+
+.container :global(.ant-input-number-group-addon) {
+  border-radius: 0 !important;
+  padding: 15px;
+}
+
+.container :global(.ant-input-number-input) {
+  padding: 11px;
+}

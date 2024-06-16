@@ -3,7 +3,9 @@ import ImageGallery from "react-image-gallery";
 import styles from "./ProductDetail.module.css";
 import Title from "antd/es/typography/Title";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { BorderRightOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
 
 const images = [
   {
@@ -22,7 +24,58 @@ const images = [
 
 const ProductDetail = () => {
   const { user } = useSelector((state) => state.account);
+  const [product, setProduct] = useState({
+    _id: "1",
+    name: "Nón da",
+    category: "Nón kết",
+    id_category: "1",
+    units: [
+      {
+        color: "#1677ff",
+        price: 100000,
+        images: [
+          {
+            original: "https://picsum.photos/id/1018/1000/600/",
+            thumbnail: "https://picsum.photos/id/1018/250/150/",
+          },
+        ],
+      },
+      {
+        color: "#000000",
+        price: 200000,
+        images: [
+          {
+            original: "https://picsum.photos/id/1019/1000/600/",
+            thumbnail: "https://picsum.photos/id/1019/250/150/",
+          },
+        ],
+      },
+      {
+        color: "#f1f2f3f4",
+        price: 300000,
+        images: [
+          {
+            original: "https://picsum.photos/id/1019/1000/600/",
+            thumbnail: "https://picsum.photos/id/1019/250/150/",
+          },
+        ],
+      },
+    ],
+    rating: 2,
+    sold: 26,
+  });
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [unitActive, setUnitActive] = useState({
+    color: "#1677ff",
+    price: 100000,
+    images: [
+      {
+        original: "https://picsum.photos/id/1018/1000/600/",
+        thumbnail: "https://picsum.photos/id/1018/250/150/",
+      },
+    ],
+  });
 
   const handleAddToCart = () => {
     if (user) {
@@ -31,50 +84,72 @@ const ProductDetail = () => {
       // navigate to login page
       navigate("/login");
     }
+  };
 
-    console.log("user", user);
+  useEffect(() => {
+    setUnitActive(product.units[0]);
+  }, []);
+
+  const handleActiveUnit = (unit) => {
+    setUnitActive(unit);
   };
 
   return (
     <Row gutter={32} className={styles.container}>
       <Col span={12}>
-        <ImageGallery items={images} />
+        <ImageGallery items={unitActive.images} />
       </Col>
       <Col span={12}>
         <Row gutter={[16, 16]}>
           <Col span={24}>
-            <p>Danh mục: Nón kết</p>
+            <p>Danh mục: {product.category}</p>
           </Col>
           <Col span={24}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <Rate disabled defaultValue={2} />
-              <span>Đã bán: 26</span>
+              <span>Đã bán: {product.sold}</span>
             </div>
           </Col>
           <Col span={24}>
-            <h1>Nón da</h1>
+            <h1>{product.name}</h1>
           </Col>
 
           <Col span={24}>
             <p>Màu sắc:</p>
             <div style={{ display: "flex", gap: "16px", marginTop: "5px" }}>
-              <ColorPicker defaultValue="#1677ff" open={false} />
-              <ColorPicker defaultValue="#000000" open={false} />
-              <ColorPicker defaultValue="#f1f2f3f4" open={false} />
+              {product.units.map((unit, index) => (
+                <ColorPicker
+                  style={{
+                    border: unit.color === unitActive.color ? "2px solid #1677ff" : "none",
+                  }}
+                  key={index}
+                  defaultValue={unit.color}
+                  open={false}
+                  onClick={() => handleActiveUnit(unit)}
+                />
+              ))}
             </div>
           </Col>
 
           <Col span={24}>
-            <Title>100.000 đ</Title>
+            <Title>{unitActive.price}đ</Title>
           </Col>
 
           <Col span={24}>
-            <InputNumber addonBefore="-" addonAfter="+" defaultValue={1} min={1} />
+            <InputNumber addonBefore="-" addonAfter="+" controls={false} defaultValue={1} min={1} />
           </Col>
           <Col span={24}>
             <Space gutter={16}>
-              <Button onClick={handleAddToCart}> Thêm vào giỏ hàng</Button>
-              <Button type="primary">Mua ngay</Button>
+              <Button
+                className={styles.btn}
+                onClick={handleAddToCart}
+                icon={<ShoppingCartOutlined />}
+              >
+                Thêm vào giỏ hàng
+              </Button>
+              <Button className={styles.btn} type="primary">
+                Mua ngay
+              </Button>
             </Space>
           </Col>
         </Row>
