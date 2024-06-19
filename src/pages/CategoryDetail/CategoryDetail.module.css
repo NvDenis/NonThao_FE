@@ -1,7 +1,32 @@
-.cardContainer {
-  width: 200px;
-  margin: 0 0 10px 5px;
+.segmentedContainer {
+  overflow: auto;
 }
 
-.img {
+.cardContainer {
+  width: 100%;
+  max-width: 300px;
+}
+.containerProducts {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  gap: 10px;
+}
+
+.inforContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 1000px) {
+  .containerProducts {
+    grid-template-columns: auto auto auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .containerProducts {
+    grid-template-columns: auto auto;
+    gap: 5px;
+  }
 }

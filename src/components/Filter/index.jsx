@@ -10,36 +10,35 @@ import {
 import Title from "antd/es/typography/Title";
 import { Card, Checkbox, Col, Divider, Flex, Menu, Row } from "antd";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Filter = () => {
   const [mode, setMode] = useState("inline");
   const [theme, setTheme] = useState("light");
   const items = [
     {
+      label: <Link to={"/category/non-ket"}>NÓN KẾT</Link>,
       key: "1",
-      icon: <MailOutlined />,
-      label: "Navigation One",
     },
     {
+      label: <Link to={"/category/non-da"}>NÓN DA</Link>,
       key: "2",
-      icon: <CalendarOutlined />,
-      label: "Navigation Two",
     },
     {
-      key: "sub1",
-      label: "Navigation Two",
-      icon: <AppstoreOutlined />,
+      label: <Link to={"/category/non-dan-tay"}>NÓN ĐAN TAY</Link>,
+      key: "3",
     },
     {
-      key: "sub2",
-      label: "Navigation Three",
-      icon: <SettingOutlined />,
+      label: <Link to={"/category/non-vanh"}>NÓN VÀNH</Link>,
+      key: "4",
     },
     {
-      key: "link",
-      label: "Navigation Three",
-
-      icon: <LinkOutlined />,
+      label: <Link to={"/category/non-phot"}>NÓN PHỚT</Link>,
+      key: "5",
+    },
+    {
+      label: <Link to={"/category/non-tre-em"}>NÓN TRẺ EM</Link>,
+      key: "6",
     },
   ];
   const changeMode = (value) => {
@@ -70,7 +69,13 @@ const Filter = () => {
         onChange={onChange}
       >
         <Row gutter={[16, 8]}>
-          <Menu defaultSelectedKeys={["1"]} defaultOpenKeys={["sub1"]} mode={mode} theme={theme} items={items} />
+          <Menu
+            defaultSelectedKeys={["1"]}
+            defaultOpenKeys={["sub1"]}
+            mode={mode}
+            theme={theme}
+            items={items}
+          />
         </Row>
       </Checkbox.Group>
     </Card>

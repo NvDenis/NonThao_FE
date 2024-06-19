@@ -96,10 +96,24 @@ const ProductDetail = () => {
 
   return (
     <Row gutter={32} className={styles.container}>
-      <Col span={12}>
+      <Col
+        lg={{
+          span: 24,
+        }}
+        xl={{
+          span: 12,
+        }}
+      >
         <ImageGallery items={unitActive.images} />
       </Col>
-      <Col span={12}>
+      <Col
+        lg={{
+          span: 24,
+        }}
+        xl={{
+          span: 12,
+        }}
+      >
         <Row gutter={[16, 16]}>
           <Col span={24}>
             <p>Danh mục: {product.category}</p>
