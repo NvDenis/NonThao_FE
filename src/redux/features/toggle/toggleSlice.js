@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   cartDrawer: false,
   menuMobile: false,
+  modalAddProduct: false,
 };
 
 export const toggleSlice = createSlice({
@@ -15,10 +16,13 @@ export const toggleSlice = createSlice({
     toggleMenuMobile: (state) => {
       state.menuMobile = !state.menuMobile;
     },
+    toggleModalAddProduct: (state) => {
+      state.modalAddProduct = !state.modalAddProduct;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { toggleCartDrawer, toggleMenuMobile } = toggleSlice.actions;
+export const { toggleCartDrawer, toggleMenuMobile, toggleModalAddProduct } = toggleSlice.actions;
 
 export default toggleSlice.reducer;

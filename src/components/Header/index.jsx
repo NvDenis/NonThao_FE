@@ -26,7 +26,6 @@ import { toggleCartDrawer, toggleMenuMobile } from "../../redux/features/toggle/
 import { useDispatch, useSelector } from "react-redux";
 
 import React, { useEffect, useState } from "react";
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from "@ant-design/icons";
 import { callLogout } from "../../services/api";
 import { logout } from "../../redux/features/user/userSlice";
 const menuItem = [
@@ -76,14 +75,17 @@ const Header = () => {
   const [current, setCurrent] = useState("mail");
   const [isShowGroupIconFix, setIsShowGroupIconFix] = useState(false);
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.account);
 
   const handleLogout = async () => {
     try {
       const res = await callLogout();
-      if (res.vcode == 0) {
-        message.success("Đăng xuất thành công");
+      if (res?.vcode == 0) {
         dispatch(logout());
+        message.success("Đăng xuất thành công");
         navigate("/");
+      } else {
+        message.error(res.message);
       }
     } catch (error) {
       message.error(error.message);
@@ -93,15 +95,23 @@ const Header = () => {
   const modalLogined = [
     {
       key: "profile",
-      label: <Link to="/profile">Quản lý tài khoản</Link>,
+      label: <Link to="/account">Quản lý tài khoản</Link>,
     },
+
     {
       key: "logout",
       label: <div onClick={() => handleLogout()}>Đăng xuất</div>,
     },
-  ];
 
-  const { user } = useSelector((state) => state.account);
+    ...(user?.role === "ADMIN"
+      ? [
+          {
+            key: "admin",
+            label: <Link to="/admin">Quản trị hệ thống</Link>,
+          },
+        ]
+      : []),
+  ];
 
   const onClick = (e) => {
     setCurrent(e.key);

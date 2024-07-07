@@ -1,0 +1,52 @@
+.nav {
+  background-color: #fff;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: none;
+}
+
+.navList {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.managementContainer {
+  padding: 10px 20px;
+}
+
+.cartItem {
+  margin-bottom: 10px;
+  align-items: center;
+  display: flex;
+}
+
+.contentContainer {
+  background-color: white;
+  margin: 16px 16px 0 16px;
+}
+
+.headerContainer {
+  background-color: white;
+}
+
+.footerContainer {
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .headerContainer,
+  .sidebar {
+    display: none;
+  }
+
+  .nav {
+    display: block;
+  }
+
+  .contentContainer {
+    margin: 0;
+  }
+}

@@ -1,25 +1,25 @@
 import { Card, Divider, Typography, message } from "antd";
 import styles from "./Login.module.css";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { callLogin } from "../../services/api";
-import { handleLogin } from "../../redux/features/user/userSlice";
+import { setCredentials } from "../../redux/features/user/userSlice";
 import { useDispatch } from "react-redux";
 
 const Login = () => {
-  const navigate = useNavigate();
   const dispath = useDispatch();
-
+  const navigate = useNavigate();
   const onFinish = async (values) => {
     try {
       const res = await callLogin(values);
-      if (res.vcode == 0) {
-        dispath(handleLogin(res.data));
-        message.success("Đăng nhập thành công");
-        navigate("/");
-      } else message.error(res.msg);
+      if (res?.vcode == 0) {
+        dispath(setCredentials(res.data));
+        localStorage.setItem("accessToken", res.data.accessToken);
+        message.success(res.message);
+        navigate("/account");
+      } else message.error(res.message);
     } catch (error) {
-      console.log(error);
+      console.error(error.message);
     }
   };
   const onFinishFailed = (errorInfo) => {
@@ -37,7 +37,8 @@ const Login = () => {
             span: 24,
           }}
           initialValues={{
-            remember: true,
+            phone: "000000",
+            password: "123",
           }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}

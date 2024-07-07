@@ -4,18 +4,24 @@ import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { callRegister } from "../../services/api";
 import { useDispatch } from "react-redux";
-import { handleLogin } from "../../redux/features/user/userSlice";
+import { setCredentials } from "../../redux/features/user/userSlice";
 
 const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const onFinish = async (values) => {
-    const res = await callRegister(values);
-    if (res.vcode == 0) {
-      message.success("Đăng ký thành công");
-      dispatch(handleLogin(res.data));
-      navigate("/");
-    } else message.error(res.message);
+    try {
+      const res = await callRegister(values);
+      if (res?.vcode === 0) {
+        dispatch(setCredentials(res.data));
+        message.success(res.message);
+        navigate("/account");
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Đăng ký thất bại. Vui lòng thử lại.");
+    }
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -31,7 +37,10 @@ const Register = () => {
             span: 24,
           }}
           initialValues={{
-            remember: true,
+            name: "admin",
+            phone: "000000",
+            password: "123",
+            confirmPassword: "123",
           }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}

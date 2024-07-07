@@ -90,7 +90,7 @@ const CategoryDetail = () => {
                 </Link>
               ))}
             </div>
-            <div style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center", marginTop: "20px" }}>
               <Button type="primary">Xem thêm</Button>
             </div>
           </Card>

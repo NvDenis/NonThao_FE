@@ -1,25 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null,
+  user: null,
+  isLoading: true,
+  cart: localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : [],
 };
 
 export const userSlice = createSlice({
   name: "account",
   initialState,
   reducers: {
-    handleLogin: (state, action) => {
+    setCredentials: (state, action) => {
       state.user = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload));
     },
     logout: (state) => {
       state.user = null;
-      localStorage.removeItem("user");
+      localStorage.removeItem("accessToken");
+    },
+    setLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    addCartLocal: (state, action) => {
+      if (action.payload.type == "add") {
+      }
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { handleLogin, logout } = userSlice.actions;
+export const { setCredentials, logout, setLoading } = userSlice.actions;
 
 export default userSlice.reducer;

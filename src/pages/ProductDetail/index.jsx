@@ -77,14 +77,7 @@ const ProductDetail = () => {
     ],
   });
 
-  const handleAddToCart = () => {
-    if (user) {
-      // TODO: Add to cart
-    } else {
-      // navigate to login page
-      navigate("/login");
-    }
-  };
+  const handleAddToCart = () => {};
 
   useEffect(() => {
     setUnitActive(product.units[0]);
