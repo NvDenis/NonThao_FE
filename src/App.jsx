@@ -10,8 +10,6 @@ import Home from "./pages/Home/index.jsx";
 import Order from "./pages/Order/index.jsx";
 import NotFound from "./components/NotFound/index.jsx";
 import ProductDetail from "./pages/ProductDetail/index.jsx";
-import Login from "./pages/Login/index.jsx";
-import Register from "./pages/Register/index.jsx";
 import CategoryDetail from "./pages/CategoryDetail/index.jsx";
 import Account from "./pages/Account/index.jsx";
 import AuthRoute from "./pages/AuthRoute/index.jsx";
@@ -25,6 +23,8 @@ import AdminPage from "./pages/AdminPage/index.jsx";
 import AdminRoute from "./components/AdminRoute/index.jsx";
 import ProductManagement from "./pages/ProductManagement/index.jsx";
 import Dashboard from "./components/Dashboard/index.jsx";
+import ModalLogin from "./components/ModalLogin/index.jsx";
+import ModalRegister from "./components/ModalRegister/index.jsx";
 
 const LayOut = () => {
   return (
@@ -38,6 +38,8 @@ const LayOut = () => {
       <Footer />
       <CartDrawer />
       <MenuMobile />
+      <ModalLogin />
+      <ModalRegister />
     </>
   );
 };
@@ -50,7 +52,7 @@ function App() {
   const handleFetchAccount = async () => {
     try {
       const res = await callFetchAccount();
-      if (res && res.vcode === 0) {
+      if (res?.vcode === 0) {
         dispatch(setCredentials(res.data));
       } else {
         message.error(res?.message || "Đã xảy ra lỗi");
@@ -99,14 +101,6 @@ function App() {
               <Account />
             </AuthRoute>
           ),
-        },
-        {
-          path: "/login",
-          element: <Login />,
-        },
-        {
-          path: "/register",
-          element: <Register />,
         },
       ],
     },

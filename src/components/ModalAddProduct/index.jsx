@@ -144,7 +144,7 @@ const ModalAddProduct = () => {
           status: true,
         }}
       >
-        <Form.Item valuePropName="fileList" getValueFromEvent={normFile}>
+        {/* <Form.Item valuePropName="fileList" getValueFromEvent={normFile}>
           <div style={{ textAlign: "center" }}>
             <Upload
               name="avatar"
@@ -166,7 +166,7 @@ const ModalAddProduct = () => {
               )}
             </Upload>
           </div>
-        </Form.Item>
+        </Form.Item> */}
 
         <Row
           gutter={[
@@ -196,14 +196,9 @@ const ModalAddProduct = () => {
               span: 12,
             }}
           >
-            <Flex gap={15}>
-              <Form.Item label="Giá sản phẩm" name="price" labelCol={{ span: 24 }}>
-                <Input />
-              </Form.Item>
-              <Form.Item label="Giá sản phẩm" name="price" labelCol={{ span: 24 }}>
-                <Input />
-              </Form.Item>
-            </Flex>
+            <Form.Item label="Giá sản phẩm" name="price" labelCol={{ span: 24 }}>
+              <Input />
+            </Form.Item>
           </Col>
         </Row>
         <Row gutter={[16, 24]}>
@@ -218,7 +213,7 @@ const ModalAddProduct = () => {
                   ]}
                 />
               </Form.Item>
-              <Form.Item label="Đơn vị" name="units" labelCol={{ span: 24 }}>
+              <Form.Item label="Danh mục" name="units" labelCol={{ span: 24 }}>
                 <Select
                   style={{ width: "100%" }}
                   options={[
@@ -229,11 +224,7 @@ const ModalAddProduct = () => {
               </Form.Item>
             </Space>
           </Col>
-          <Col span={12}>
-            <Form.Item label="Giá khuyến mãi" name="discountedPrice" labelCol={{ span: 24 }}>
-              <Input />
-            </Form.Item>
-          </Col>
+          <Col span={12}></Col>
         </Row>
 
         <Form.Item>

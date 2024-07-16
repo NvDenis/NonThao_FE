@@ -13,22 +13,7 @@ const ProductManagement = () => {
   const dispatch = useDispatch();
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [products, setProducts] = useState([
-    {
-      _id: "1",
-      name: "Nón kết MC026A-XR2",
-      status: true,
-      active: true,
-      units: [
-        {
-          price: 445000,
-          images: [
-            "https://nonson.vn/vnt_upload/product/NON_KET/MC026A/XR2/thumbs/800_nonson_2.png",
-          ],
-        },
-      ],
-    },
-  ]);
+  const [products, setProducts] = useState([]);
 
   const columns = [
     {

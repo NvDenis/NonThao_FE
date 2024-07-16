@@ -16,7 +16,7 @@ const ProductChooses = () => {
       {cartChoosed &&
         cartChoosed.map((item) => {
           return (
-            <Card span={24} style={{ marginBottom: "10px" }}>
+            <Card key={item._id} span={24} style={{ marginBottom: "10px" }}>
               <div className={styles.cardContainer}>
                 <div className={styles.groupImage}>
                   <Image className={styles.imageProduct} src={item.img} />
@@ -27,7 +27,9 @@ const ProductChooses = () => {
                   <Typography.Text>{item.price} </Typography.Text>
                   <Typography.Text>Số lượng: {item.quantity} </Typography.Text>
                 </div>
-                <Typography.Text className={styles.sumProduct}>Tổng : {item.quantity * item.price} </Typography.Text>
+                <Typography.Text className={styles.sumProduct}>
+                  Tổng : {item.quantity * item.price}{" "}
+                </Typography.Text>
               </div>
             </Card>
           );

@@ -22,53 +22,17 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
-import { toggleCartDrawer, toggleMenuMobile } from "../../redux/features/toggle/toggleSlice";
+import {
+  toggleCartDrawer,
+  toggleMenuMobile,
+  toggleModalLogin,
+  toggleModalRegister,
+} from "../../redux/features/toggle/toggleSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import React, { useEffect, useState } from "react";
 import { callLogout } from "../../services/api";
 import { logout } from "../../redux/features/user/userSlice";
-const menuItem = [
-  {
-    label: <Link to={"category/non-ket"}>NÓN KẾT</Link>,
-    key: "1",
-  },
-  {
-    label: <Link to={"category/non-da"}>NÓN DA</Link>,
-    key: "2",
-  },
-  {
-    label: <Link to={"category/non-dan-tay"}>NÓN ĐAN TAY</Link>,
-    key: "3",
-  },
-  {
-    label: <Link to={"category/non-vanh"}>NÓN VÀNH</Link>,
-    key: "4",
-  },
-  {
-    label: <Link to={"category/non-phot"}>NÓN PHỚT</Link>,
-    key: "5",
-  },
-  {
-    label: <Link to={"category/non-tre-em"}>NÓN TRẺ EM</Link>,
-    key: "6",
-  },
-];
-
-const modalAuth = [
-  {
-    key: "1",
-    label: <Link to="/login">Đăng nhập</Link>,
-  },
-  {
-    key: "2",
-    label: <Link to="/register">Đăng ký</Link>,
-  },
-  {
-    key: "3",
-    label: <span>Facebook</span>,
-  },
-];
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -82,7 +46,7 @@ const Header = () => {
       const res = await callLogout();
       if (res?.vcode == 0) {
         dispatch(logout());
-        message.success("Đăng xuất thành công");
+        message.success(res.message);
         navigate("/");
       } else {
         message.error(res.message);
@@ -111,6 +75,48 @@ const Header = () => {
           },
         ]
       : []),
+  ];
+
+  const menuItem = [
+    {
+      label: <Link to={"category/non-ket"}>NÓN KẾT</Link>,
+      key: "1",
+    },
+    {
+      label: <Link to={"category/non-da"}>NÓN DA</Link>,
+      key: "2",
+    },
+    {
+      label: <Link to={"category/non-dan-tay"}>NÓN ĐAN TAY</Link>,
+      key: "3",
+    },
+    {
+      label: <Link to={"category/non-vanh"}>NÓN VÀNH</Link>,
+      key: "4",
+    },
+    {
+      label: <Link to={"category/non-phot"}>NÓN PHỚT</Link>,
+      key: "5",
+    },
+    {
+      label: <Link to={"category/non-tre-em"}>NÓN TRẺ EM</Link>,
+      key: "6",
+    },
+  ];
+
+  const modalAuth = [
+    {
+      key: "1",
+      label: <div onClick={() => dispatch(toggleModalLogin())}>Đăng nhập</div>,
+    },
+    {
+      key: "2",
+      label: <div onClick={() => dispatch(toggleModalRegister())}>Đăng ký</div>,
+    },
+    {
+      key: "3",
+      label: <span>Facebook</span>,
+    },
   ];
 
   const onClick = (e) => {
