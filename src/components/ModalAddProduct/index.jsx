@@ -3,19 +3,22 @@ import {
   Col,
   Flex,
   Form,
+  Image,
   Input,
   InputNumber,
   Modal,
   Row,
   Select,
   Space,
+  Table,
   Tabs,
+  Tag,
   Upload,
   message,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import styles from "./ModalAddProduct.module.css";
 import { toggleModalAddProduct } from "../../redux/features/toggle/toggleSlice";
 import { callUploadImgHat } from "../../services/api";
@@ -39,6 +42,63 @@ const normFile = (e) => {
   return e?.fileList;
 };
 
+const columns = [
+  {
+    title: "Hình ảnh",
+    dataIndex: "images",
+    key: "images",
+    render: (text) => <a>{text}</a>,
+    width: 200,
+  },
+  {
+    title: "Màu sắc",
+    dataIndex: "color",
+    key: "color",
+    render: (text) => <a>{text}</a>,
+    width: 200,
+  },
+  {
+    title: "Giá",
+    dataIndex: "price",
+    key: "price",
+    width: 200,
+  },
+  {
+    title: "Thao tác",
+    key: "action",
+    width: 100,
+    render: (_, record) => (
+      <Space size="middle">
+        <EditOutlined style={{ color: "orange" }} />
+        <DeleteOutlined style={{ color: "red" }} />
+      </Space>
+    ),
+  },
+];
+const data = [
+  {
+    key: "1",
+    name: "John Brown",
+    age: 32,
+    address: "New York No. 1 Lake Park",
+    tags: ["nice", "developer"],
+  },
+  {
+    key: "2",
+    name: "Jim Green",
+    age: 42,
+    address: "London No. 1 Lake Park",
+    tags: ["loser"],
+  },
+  {
+    key: "3",
+    name: "Joe Black",
+    age: 32,
+    address: "Sydney No. 1 Lake Park",
+    tags: ["cool", "teacher"],
+  },
+];
+
 const ModalAddProduct = () => {
   const dispatch = useDispatch();
   const { modalAddProduct } = useSelector((state) => state.toggle);
@@ -46,12 +106,37 @@ const ModalAddProduct = () => {
   const [imageUrl, setImageUrl] = useState();
   const [descProductValue, setDescProductValue] = useState("");
   const [detailDescProductValue, setDetailDescProductValue] = useState("");
-  const handleChange = async ({ file }) => {
-    const res = await callUploadImgHat(file);
-    if (res.vcode == 0) {
-      setImageUrl(import.meta.env.VITE_BASE_URL + "/images/fish/" + res.data.fileUploaded);
-    } else message.error(res.message);
+  const [isShowModal, setIsShowModal] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState([
+    {
+      uid: "-1",
+      name: "image.png",
+      status: "done",
+      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+    },
+  ]);
+
+  const handleChangeImg = async ({ file }) => {
+    try {
+      const res = await callUploadImgHat(file);
+      if (res.vcode == 0) {
+        setFileList((pre) => [
+          ...pre,
+          {
+            uid: res.data.fileUploaded,
+            name: res.data.fileUploaded,
+            status: "done",
+            url: import.meta.env.VITE_BASE_URL + "/uploads/images/hat/" + res.data.fileUploaded,
+          },
+        ]);
+      } else message.error(res.message);
+    } catch (error) {
+      console.error("error", error.message);
+    }
   };
+
   const uploadButton = (
     <button
       style={{
@@ -126,6 +211,19 @@ const ModalAddProduct = () => {
 
   const [form] = Form.useForm();
 
+  const handleRemoveImg = (file) => {
+    setFileList((pre) => pre.filter((item) => item.uid !== file.uid));
+  };
+
+  const handlePreview = async (file) => {
+    console.log("filePreview", file);
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+  };
+
   return (
     <Modal
       title="Thêm sản phẩm"
@@ -133,7 +231,7 @@ const ModalAddProduct = () => {
       onCancel={() => dispatch(toggleModalAddProduct())}
       footer={null}
       style={{
-        minWidth: "80%",
+        minWidth: "70%",
       }}
     >
       <Form
@@ -144,30 +242,6 @@ const ModalAddProduct = () => {
           status: true,
         }}
       >
-        {/* <Form.Item valuePropName="fileList" getValueFromEvent={normFile}>
-          <div style={{ textAlign: "center" }}>
-            <Upload
-              name="avatar"
-              listType="picture-card"
-              className="avatar-uploader"
-              showUploadList={false}
-              customRequest={handleChange}
-            >
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt="avatar"
-                  style={{
-                    width: "100%",
-                  }}
-                />
-              ) : (
-                uploadButton
-              )}
-            </Upload>
-          </div>
-        </Form.Item> */}
-
         <Row
           gutter={[
             {
@@ -227,6 +301,14 @@ const ModalAddProduct = () => {
           <Col span={12}></Col>
         </Row>
 
+        <Button type="primary" onClick={() => setIsShowModal((pre) => !pre)}>
+          Thêm thuộc tính
+        </Button>
+
+        <Form.Item>
+          <Table columns={columns} dataSource={data} />
+        </Form.Item>
+
         <Form.Item>
           <Tabs style={{ width: "100%" }} defaultActiveKey="1" items={items} onChange={onChange} />
         </Form.Item>
@@ -237,6 +319,49 @@ const ModalAddProduct = () => {
           </Form.Item>
         </div>
       </Form>
+
+      <Modal
+        title="Thêm thuộc tính"
+        open={isShowModal}
+        onOk={() => setIsShowModal((pre) => !pre)}
+        onCancel={() => setIsShowModal((pre) => !pre)}
+      >
+        <Form>
+          <Form.Item label="Màu sắc" name="color" labelCol={{ span: 24 }}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="Giá" name="price" labelCol={{ span: 24 }}>
+            <Input />
+          </Form.Item>
+
+          <Form.Item valuePropName="fileList" getValueFromEvent={normFile}>
+            <Upload
+              name="avatar"
+              listType="picture-card"
+              className="avatar-uploader"
+              customRequest={handleChangeImg}
+              onPreview={handlePreview}
+              fileList={fileList}
+              onRemove={handleRemoveImg}
+            >
+              {fileList.length >= 8 ? null : uploadButton}
+            </Upload>
+          </Form.Item>
+        </Form>
+        {previewImage && (
+          <Image
+            wrapperStyle={{
+              display: "none",
+            }}
+            preview={{
+              visible: previewOpen,
+              onVisibleChange: (visible) => setPreviewOpen(visible),
+              afterOpenChange: (visible) => !visible && setPreviewImage(""),
+            }}
+            src={previewImage}
+          />
+        )}
+      </Modal>
     </Modal>
   );
 };

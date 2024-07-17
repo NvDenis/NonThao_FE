@@ -29,7 +29,7 @@ export const callUploadImgHat = async (fileImg) => {
   const formData = new FormData();
   formData.append("fileImg", fileImg);
   return axios({
-    url: "file/upload",
+    url: "file/uploads",
     method: "POST",
     data: formData,
     headers: {

@@ -2,7 +2,7 @@ import axios from "axios";
 import { callRefresh } from "../services/api";
 import message from "antd/lib/message";
 
-const baseURL = import.meta.env.VITE_BASE_URL || "https://localhost:3000/api/v1";
+const baseURL = import.meta.env.VITE_BASE_URL + "/api/v1" || "https://localhost:3000/api/v1";
 const accessToken = localStorage.getItem("accessToken") || "";
 
 const instance = axios.create({
