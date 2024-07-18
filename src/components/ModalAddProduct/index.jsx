@@ -1,6 +1,7 @@
 import {
   Button,
   Col,
+  ColorPicker,
   Flex,
   Form,
   Image,
@@ -42,63 +43,6 @@ const normFile = (e) => {
   return e?.fileList;
 };
 
-const columns = [
-  {
-    title: "Hình ảnh",
-    dataIndex: "images",
-    key: "images",
-    render: (text) => <a>{text}</a>,
-    width: 200,
-  },
-  {
-    title: "Màu sắc",
-    dataIndex: "color",
-    key: "color",
-    render: (text) => <a>{text}</a>,
-    width: 200,
-  },
-  {
-    title: "Giá",
-    dataIndex: "price",
-    key: "price",
-    width: 200,
-  },
-  {
-    title: "Thao tác",
-    key: "action",
-    width: 100,
-    render: (_, record) => (
-      <Space size="middle">
-        <EditOutlined style={{ color: "orange" }} />
-        <DeleteOutlined style={{ color: "red" }} />
-      </Space>
-    ),
-  },
-];
-const data = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-];
-
 const ModalAddProduct = () => {
   const dispatch = useDispatch();
   const { modalAddProduct } = useSelector((state) => state.toggle);
@@ -109,6 +53,7 @@ const ModalAddProduct = () => {
   const [isShowModal, setIsShowModal] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const [units, setUnits] = useState([]);
   const [fileList, setFileList] = useState([
     {
       uid: "-1",
@@ -136,6 +81,8 @@ const ModalAddProduct = () => {
       console.error("error", error.message);
     }
   };
+
+  console.log("units", units);
 
   const uploadButton = (
     <button
@@ -171,42 +118,74 @@ const ModalAddProduct = () => {
     },
   ];
 
+  const columns = [
+    {
+      title: "Hình ảnh",
+      dataIndex: "images",
+      key: "images",
+      render: (src) => <Image width={100} height={100} src={src[0].url} />,
+      width: 200,
+    },
+    {
+      title: "Màu sắc",
+      dataIndex: "color",
+      key: "color",
+      render: (color) => <ColorPicker value={color} />,
+      width: 200,
+    },
+    {
+      title: "Giá",
+      dataIndex: "price",
+      key: "price",
+      width: 200,
+    },
+    {
+      title: "Thao tác",
+      key: "key",
+      width: 100,
+      render: (item) => (
+        <Space size="middle">
+          <EditOutlined style={{ color: "orange" }} />
+          <DeleteOutlined style={{ color: "red" }} onClick={() => handleRemoveUnit(item.key)} />
+        </Space>
+      ),
+    },
+  ];
+
   const onFinish = async (values) => {
-    const imageProduct = imageUrl?.substring(imageUrl.lastIndexOf("/") + 1) ?? "";
-    let dataProduct = {
-      image: imageProduct,
-      name: form.getFieldValue("name"),
-      price: form.getFieldValue("price"),
-      status: form.getFieldValue("status"),
-      discountedPrice: form.getFieldValue("discountedPrice"),
-      desc: descProductValue,
-      detailDesc: detailDescProductValue,
-    };
-
-    try {
-      const res = await callCreateProduct(dataProduct);
-
-      if (res.vcode == 0) {
-        setProducts((pre) => [
-          ...pre,
-          {
-            ...res.data,
-            image: import.meta.env.VITE_BASE_URL + "/images/fish/" + res.data.image,
-            key: res.data._id,
-          },
-        ]);
-        message.success(res.message);
-        form.resetFields();
-        setDescProductValue("");
-        setDetailDescProductValue("");
-        setImageUrl("");
-        dispatch(toggleModalAddProduct());
-      } else {
-        message.error(res.message);
-      }
-    } catch (error) {
-      console.error("error", error.message);
-    }
+    // const imageProduct = imageUrl?.substring(imageUrl.lastIndexOf("/") + 1) ?? "";
+    // let dataProduct = {
+    //   image: imageProduct,
+    //   name: form.getFieldValue("name"),
+    //   price: form.getFieldValue("price"),
+    //   status: form.getFieldValue("status"),
+    //   discountedPrice: form.getFieldValue("discountedPrice"),
+    //   desc: descProductValue,
+    //   detailDesc: detailDescProductValue,
+    // };
+    // try {
+    //   const res = await callCreateProduct(dataProduct);
+    //   if (res.vcode == 0) {
+    //     setProducts((pre) => [
+    //       ...pre,
+    //       {
+    //         ...res.data,
+    //         image: import.meta.env.VITE_BASE_URL + "/images/fish/" + res.data.image,
+    //         key: res.data._id,
+    //       },
+    //     ]);
+    //     message.success(res.message);
+    //     form.resetFields();
+    //     setDescProductValue("");
+    //     setDetailDescProductValue("");
+    //     setImageUrl("");
+    //     dispatch(toggleModalAddProduct());
+    //   } else {
+    //     message.error(res.message);
+    //   }
+    // } catch (error) {
+    //   console.error("error", error.message);
+    // }
   };
 
   const [form] = Form.useForm();
@@ -222,6 +201,21 @@ const ModalAddProduct = () => {
     }
     setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
+  };
+
+  const handleAddUnits = (values) => {
+    setUnits((pre) => [
+      ...pre,
+      {
+        ...values,
+        images: fileList,
+        key: Date.now(),
+      },
+    ]);
+  };
+
+  const handleRemoveUnit = (id) => {
+    setUnits((pre) => pre.filter((unit) => unit.key !== id));
   };
 
   return (
@@ -306,7 +300,7 @@ const ModalAddProduct = () => {
         </Button>
 
         <Form.Item>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} dataSource={units} />
         </Form.Item>
 
         <Form.Item>
@@ -325,10 +319,17 @@ const ModalAddProduct = () => {
         open={isShowModal}
         onOk={() => setIsShowModal((pre) => !pre)}
         onCancel={() => setIsShowModal((pre) => !pre)}
+        footer={null}
       >
-        <Form>
+        <Form
+          initialValues={{
+            color: "#1677ff",
+            price: 0,
+          }}
+          onFinish={handleAddUnits}
+        >
           <Form.Item label="Màu sắc" name="color" labelCol={{ span: 24 }}>
-            <Input />
+            <ColorPicker />
           </Form.Item>
           <Form.Item label="Giá" name="price" labelCol={{ span: 24 }}>
             <Input />
@@ -347,6 +348,14 @@ const ModalAddProduct = () => {
               {fileList.length >= 8 ? null : uploadButton}
             </Upload>
           </Form.Item>
+
+          <div style={{ textAlign: "right" }}>
+            <Form.Item>
+              <Button htmlType="submit" type="primary">
+                Thêm
+              </Button>
+            </Form.Item>
+          </div>
         </Form>
         {previewImage && (
           <Image
