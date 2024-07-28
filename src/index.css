@@ -24,3 +24,7 @@ html {
 .ant-drawer {
   z-index: 9999;
 }
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-focused,
+.ck-blurred.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline {
+  height: 300px;
+}

@@ -11,6 +11,7 @@ import {
   Row,
   Select,
   Space,
+  Switch,
   Table,
   Tabs,
   Tag,
@@ -22,115 +23,49 @@ import { useState } from "react";
 import { DeleteOutlined, EditOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import styles from "./ModalAddProduct.module.css";
 import { toggleModalAddProduct } from "../../redux/features/toggle/toggleSlice";
-import { callUploadImgHat } from "../../services/api";
 import DescProduct from "../DescProduct";
+import formatPrice from "../../utils/formatPrice";
+import ModalAddUnit from "../ModalAddUnit";
+import ModalEditUnit from "../ModalEditUnit";
+import { callCreateProduct } from "../../services/api";
+import generateUniqueCode from "../../utils/generateUniqueCode";
+import convertToSlug from "../../utils/convertSlug";
 
-const beforeUpload = (file) => {
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-  if (!isJpgOrPng) {
-    message.error("You can only upload JPG/PNG file!");
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error("Image must smaller than 2MB!");
-  }
-  return isJpgOrPng && isLt2M;
-};
-const normFile = (e) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
-
-const ModalAddProduct = () => {
+const ModalAddProduct = ({ categories, setProducts }) => {
   const dispatch = useDispatch();
   const { modalAddProduct } = useSelector((state) => state.toggle);
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState();
   const [descProductValue, setDescProductValue] = useState("");
-  const [detailDescProductValue, setDetailDescProductValue] = useState("");
-  const [isShowModal, setIsShowModal] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
+  const [isShowModalAddUnit, setIsShowModalAddUnit] = useState(false);
+  const [isShowModalEditUnit, setIsShowModalEditUnit] = useState(false);
   const [units, setUnits] = useState([]);
-  const [fileList, setFileList] = useState([
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-  ]);
+  const [unitEdit, setUnitEdit] = useState([]);
+  const [costPrice, setCostPrice] = useState("");
 
-  const handleChangeImg = async ({ file }) => {
-    try {
-      const res = await callUploadImgHat(file);
-      if (res.vcode == 0) {
-        setFileList((pre) => [
-          ...pre,
-          {
-            uid: res.data.fileUploaded,
-            name: res.data.fileUploaded,
-            status: "done",
-            url: import.meta.env.VITE_BASE_URL + "/uploads/images/hat/" + res.data.fileUploaded,
-          },
-        ]);
-      } else message.error(res.message);
-    } catch (error) {
-      console.error("error", error.message);
-    }
-  };
-
-  console.log("units", units);
-
-  const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: "none",
-      }}
-      type="button"
-    >
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </button>
-  );
-
-  const onChange = (key) => {
-    console.log(key);
-  };
   const items = [
     {
       key: "1",
       label: "Mô tả",
-      children: (
-        <Form.Item name="descProduct">
-          <DescProduct onDescChange={setDescProductValue} />
-        </Form.Item>
-      ),
+      children: <DescProduct onDescChange={setDescProductValue} />,
     },
   ];
 
-  const columns = [
+  const unitTables = [
     {
       title: "Hình ảnh",
       dataIndex: "images",
       key: "images",
-      render: (src) => <Image width={100} height={100} src={src[0].url} />,
+      render: (src) => <Image width={100} height={100} src={src[0]?.url} />,
       width: 200,
     },
     {
       title: "Màu sắc",
       dataIndex: "color",
       key: "color",
-      render: (color) => <ColorPicker value={color} />,
+      render: (color) => (
+        <>
+          <ColorPicker value={color} open={false} />
+        </>
+      ),
       width: 200,
     },
     {
@@ -145,7 +80,13 @@ const ModalAddProduct = () => {
       width: 100,
       render: (item) => (
         <Space size="middle">
-          <EditOutlined style={{ color: "orange" }} />
+          <EditOutlined
+            style={{ color: "orange" }}
+            onClick={() => {
+              setUnitEdit(item);
+              setIsShowModalEditUnit(true);
+            }}
+          />
           <DeleteOutlined style={{ color: "red" }} onClick={() => handleRemoveUnit(item.key)} />
         </Space>
       ),
@@ -153,65 +94,30 @@ const ModalAddProduct = () => {
   ];
 
   const onFinish = async (values) => {
-    // const imageProduct = imageUrl?.substring(imageUrl.lastIndexOf("/") + 1) ?? "";
-    // let dataProduct = {
-    //   image: imageProduct,
-    //   name: form.getFieldValue("name"),
-    //   price: form.getFieldValue("price"),
-    //   status: form.getFieldValue("status"),
-    //   discountedPrice: form.getFieldValue("discountedPrice"),
-    //   desc: descProductValue,
-    //   detailDesc: detailDescProductValue,
-    // };
-    // try {
-    //   const res = await callCreateProduct(dataProduct);
-    //   if (res.vcode == 0) {
-    //     setProducts((pre) => [
-    //       ...pre,
-    //       {
-    //         ...res.data,
-    //         image: import.meta.env.VITE_BASE_URL + "/images/fish/" + res.data.image,
-    //         key: res.data._id,
-    //       },
-    //     ]);
-    //     message.success(res.message);
-    //     form.resetFields();
-    //     setDescProductValue("");
-    //     setDetailDescProductValue("");
-    //     setImageUrl("");
-    //     dispatch(toggleModalAddProduct());
-    //   } else {
-    //     message.error(res.message);
-    //   }
-    // } catch (error) {
-    //   console.error("error", error.message);
-    // }
-  };
+    const data = {
+      ...values,
+      name: generateUniqueCode(values.name.trim()),
+      costPrice: Number(costPrice.replace(/\,/g, "")),
+      units: units.map((unit) => {
+        return {
+          ...unit,
+          price: Number(unit.price.replace(/\,/g, "")),
+          images: unit.images.map((image) => image.name),
+        };
+      }),
+      link: convertToSlug(values.name.trim()),
+    };
 
-  const [form] = Form.useForm();
-
-  const handleRemoveImg = (file) => {
-    setFileList((pre) => pre.filter((item) => item.uid !== file.uid));
-  };
-
-  const handlePreview = async (file) => {
-    console.log("filePreview", file);
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
+    try {
+      const res = await callCreateProduct(data);
+      if (res.vcode == 0) {
+        setProducts((pre) => [...pre, res.data]);
+        dispatch(toggleModalAddProduct());
+        message.success(res.message);
+      } else message.error(res.message);
+    } catch (error) {
+      console.error("error", error.message);
     }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  };
-
-  const handleAddUnits = (values) => {
-    setUnits((pre) => [
-      ...pre,
-      {
-        ...values,
-        images: fileList,
-        key: Date.now(),
-      },
-    ]);
   };
 
   const handleRemoveUnit = (id) => {
@@ -230,10 +136,10 @@ const ModalAddProduct = () => {
     >
       <Form
         className={styles.form}
-        form={form}
         onFinish={onFinish}
         initialValues={{
           status: true,
+          active: true,
         }}
       >
         <Row
@@ -264,113 +170,100 @@ const ModalAddProduct = () => {
               span: 12,
             }}
           >
-            <Form.Item label="Giá sản phẩm" name="price" labelCol={{ span: 24 }}>
-              <Input />
+            <Form.Item label="Giá vốn" labelCol={{ span: 24 }}>
+              <Input
+                value={costPrice}
+                onChange={(e) => setCostPrice(formatPrice(e.target.value))}
+              />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={[16, 24]}>
-          <Col span={12}>
-            <Space>
-              <Form.Item label="Tình trạng" name="status" labelCol={{ span: 24 }}>
-                <Select
-                  style={{ width: "100%" }}
-                  options={[
-                    { value: true, label: "Còn hàng" },
-                    { value: false, label: "Hết hàng" },
-                  ]}
-                />
-              </Form.Item>
-              <Form.Item label="Danh mục" name="units" labelCol={{ span: 24 }}>
-                <Select
-                  style={{ width: "100%" }}
-                  options={[
-                    { value: true, label: "Còn hàng" },
-                    { value: false, label: "Hết hàng" },
-                  ]}
-                />
-              </Form.Item>
-            </Space>
+          <Col
+            xs={{
+              span: 24,
+            }}
+            lg={{
+              span: 6,
+            }}
+          >
+            <Form.Item label="Tình trạng" name="status" labelCol={{ span: 24 }}>
+              <Select
+                style={{ width: "100%" }}
+                options={[
+                  { value: true, label: "Còn hàng" },
+                  { value: false, label: "Hết hàng" },
+                ]}
+              />
+            </Form.Item>
           </Col>
-          <Col span={12}></Col>
+          <Col
+            xs={{
+              span: 24,
+            }}
+            lg={{
+              span: 6,
+            }}
+          >
+            <Form.Item label="Danh mục" name="id_category" labelCol={{ span: 24 }}>
+              <Select
+                style={{ width: "100%" }}
+                options={[
+                  ...categories.map((category) => ({
+                    value: category._id,
+                    label: category.name,
+                  })),
+                ]}
+              />
+            </Form.Item>
+          </Col>
+          <Col
+            xs={{
+              span: 24,
+            }}
+            lg={{
+              span: 12,
+            }}
+          >
+            <Form.Item
+              label="Bật hiển thị trên web"
+              name="active"
+              valuePropName="checked"
+              labelCol={{ span: 24 }}
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
         </Row>
 
-        <Button type="primary" onClick={() => setIsShowModal((pre) => !pre)}>
+        <Button type="primary" onClick={() => setIsShowModalAddUnit((pre) => !pre)}>
           Thêm thuộc tính
         </Button>
 
         <Form.Item>
-          <Table columns={columns} dataSource={units} />
+          <Table columns={unitTables} dataSource={units} pagination={false} />
         </Form.Item>
 
-        <Form.Item>
-          <Tabs style={{ width: "100%" }} defaultActiveKey="1" items={items} onChange={onChange} />
-        </Form.Item>
+        <Tabs style={{ width: "100%", height: "400px" }} defaultActiveKey="1" items={items} />
 
-        <div className="text-right mt-2">
-          <Form.Item>
-            <Button htmlType="submit">Thêm sản phẩm</Button>
-          </Form.Item>
-        </div>
+        <Form.Item style={{ textAlign: "right", marginTop: "10px" }}>
+          <Button type="primary" htmlType="submit">
+            Thêm sản phẩm
+          </Button>
+        </Form.Item>
       </Form>
 
-      <Modal
-        title="Thêm thuộc tính"
-        open={isShowModal}
-        onOk={() => setIsShowModal((pre) => !pre)}
-        onCancel={() => setIsShowModal((pre) => !pre)}
-        footer={null}
-      >
-        <Form
-          initialValues={{
-            color: "#1677ff",
-            price: 0,
-          }}
-          onFinish={handleAddUnits}
-        >
-          <Form.Item label="Màu sắc" name="color" labelCol={{ span: 24 }}>
-            <ColorPicker />
-          </Form.Item>
-          <Form.Item label="Giá" name="price" labelCol={{ span: 24 }}>
-            <Input />
-          </Form.Item>
-
-          <Form.Item valuePropName="fileList" getValueFromEvent={normFile}>
-            <Upload
-              name="avatar"
-              listType="picture-card"
-              className="avatar-uploader"
-              customRequest={handleChangeImg}
-              onPreview={handlePreview}
-              fileList={fileList}
-              onRemove={handleRemoveImg}
-            >
-              {fileList.length >= 8 ? null : uploadButton}
-            </Upload>
-          </Form.Item>
-
-          <div style={{ textAlign: "right" }}>
-            <Form.Item>
-              <Button htmlType="submit" type="primary">
-                Thêm
-              </Button>
-            </Form.Item>
-          </div>
-        </Form>
-        {previewImage && (
-          <Image
-            wrapperStyle={{
-              display: "none",
-            }}
-            preview={{
-              visible: previewOpen,
-              onVisibleChange: (visible) => setPreviewOpen(visible),
-              afterOpenChange: (visible) => !visible && setPreviewImage(""),
-            }}
-            src={previewImage}
-          />
-        )}
-      </Modal>
+      <ModalAddUnit
+        setIsShowModalAddUnit={setIsShowModalAddUnit}
+        isShowModalAddUnit={isShowModalAddUnit}
+        setUnits={setUnits}
+      />
+      <ModalEditUnit
+        unitEdit={unitEdit}
+        isShowModalEditUnit={isShowModalEditUnit}
+        setIsShowModalEditUnit={setIsShowModalEditUnit}
+        setUnits={setUnits}
+      />
     </Modal>
   );
 };

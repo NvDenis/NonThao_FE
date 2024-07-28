@@ -3,24 +3,34 @@ import { useEffect, useState } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import ModalAddProduct from "../../components/ModalAddProduct";
-import { callDeleteProduct, callFetchProduct } from "../../services/api";
+import { callDeleteProduct, callFetchProduct, callGetCategories } from "../../services/api";
 import { toggleModalAddProduct } from "../../redux/features/toggle/toggleSlice";
 import Search from "antd/es/input/Search";
 import styles from "./ProductManagement.module.css";
+import formatPrice from "../../utils/formatPrice";
 
 const ProductManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
+  const [total, setTotal] = useState(0);
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const columns = [
     {
       title: "Hình ảnh",
-      dataIndex: "image",
-      key: "image",
-      render: (text) => <Image src={text} style={{ width: "100px", height: "100px" }} />,
+      dataIndex: "units",
+      key: "units",
+      render: (units) => (
+        <>
+          <Image
+            src={import.meta.env.VITE_BASE_URL + "/uploads/images/hat/" + units[0]?.images?.[0]}
+            style={{ width: "100px", height: "100px" }}
+          />
+        </>
+      ),
       width: 150,
     },
     {
@@ -32,8 +42,9 @@ const ProductManagement = () => {
     },
     {
       title: "Giá",
-      dataIndex: "price",
-      key: "price",
+      dataIndex: "units",
+      key: "units",
+      render: (units) => <p> {formatPrice(units?.[0]?.price.toString())}</p>,
       width: 150,
     },
     {
@@ -90,19 +101,32 @@ const ProductManagement = () => {
     const fetchProduct = async () => {
       try {
         const res = await callFetchProduct(current, pageSize);
-        console.log(res);
-        const products = res.data.map((item) => ({
+        const products = res.data.result.map((item) => ({
           ...item,
           key: item._id,
-          image: import.meta.env.VITE_BASE_URL + "/images/fish/" + item.image,
+          image: import.meta.env.VITE_BASE_URL + "/uploads/images/hat/" + item.image,
         }));
         setProducts(products);
+        setTotal(res.data.meta.total);
       } catch (error) {
         console.error(error.message);
       }
     };
 
     fetchProduct();
+  }, [current, pageSize]);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const res = await callGetCategories();
+        setCategories(res.data);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
+    fetchCategory();
   }, []);
 
   return (
@@ -110,7 +134,7 @@ const ProductManagement = () => {
       <Flex className={styles.header}>
         <Search
           placeholder="Tìm kiếm bằng tên sản phẩm..."
-          enterButton="Search"
+          enterButton="Tìm"
           className={styles.search}
         />
         <Button
@@ -122,9 +146,18 @@ const ProductManagement = () => {
           Thêm sản phẩm
         </Button>
       </Flex>
-      <Table columns={columns} dataSource={products} loading={isLoading} />
+      <Table
+        columns={columns}
+        dataSource={products}
+        loading={isLoading}
+        pagination={{ current: current, pageSize: pageSize, total: total, showSizeChanger: true }}
+        onChange={(pagination) => {
+          setCurrent(pagination.current);
+          setPageSize(pagination.pageSize);
+        }}
+      />
 
-      <ModalAddProduct setProducts={setProducts} />
+      <ModalAddProduct setProducts={setProducts} categories={categories} />
     </div>
   );
 };

@@ -20,12 +20,37 @@ export const callRefresh = async () => {
   return await axios.get("/auth/refresh");
 };
 
+export const callCreateCategory = async (data) => {
+  return await axios.post("/category", data);
+};
+
+export const callGetCategories = async () => {
+  return await axios.get("/category");
+};
+
+export const callGetDetailCategory = async (id) => {
+  return await axios.get("/category/" + id);
+};
+
+export const callDeleteCategory = async (id) => {
+  return await axios.delete("/category/" + id);
+};
+
+export const callUpdateCategory = async (_id, data) => {
+  return await axios.put(`/category/${_id}`, data);
+};
+
+export const callGetProductByCategory = async (id) => {
+  return await axios.get(`/product/category/${id}`);
+};
+
 /**
  * nếu upload thì truyền vào fileImg, sửa ảnh thì truyền vào oldImg để server không bị rác
  * @param fileImg
  * @returns
  */
-export const callUploadImgHat = async (fileImg) => {
+export const callUploadImg = async (fileImg, uploadType) => {
+  console.log("upload", uploadType);
   const formData = new FormData();
   formData.append("fileImg", fileImg);
   return axios({
@@ -34,24 +59,24 @@ export const callUploadImgHat = async (fileImg) => {
     data: formData,
     headers: {
       "Content-Type": "multipart/form-data",
-      "upload-type": "hat",
+      "upload-type": uploadType,
     },
   });
 };
 
 // ADMIN ROUTES 👇
-export const callFetchProduct = async (page, pageSize) => {
-  return await axios.get(`/product?page=${page}&pageSize=${pageSize}`);
+export const callFetchProduct = async (current, pageSize) => {
+  return await axios.get(`/product/data?current=${current}&pageSize=${pageSize}`);
 };
 
 export const callDeleteProduct = async (id) => {
-  return await axios.delete(`/product/${id}`);
+  return await axios.delete(`/product/data/${id}`);
 };
 
 export const callCreateProduct = async (data) => {
-  return await axios.post("/product", data);
+  return await axios.post("/product/data", data);
 };
 
 export const callUpdateProduct = async (id, data) => {
-  return await axios.put(`/product/${id}`, data);
+  return await axios.put(`/product/data/${id}`, data);
 };
