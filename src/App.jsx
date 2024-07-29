@@ -15,7 +15,7 @@ import Account from "./pages/Account/index.jsx";
 import AuthRoute from "./pages/AuthRoute/index.jsx";
 import { message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { callFetchAccount } from "./services/api.js";
+import { callFetchAccount, callGetCategories } from "./services/api.js";
 import { setCredentials } from "./redux/features/user/userSlice.js";
 import Loader from "./components/Loader/index.jsx";
 import { setLoading } from "../src/redux/features/user/userSlice.js";
@@ -25,6 +25,9 @@ import ProductManagement from "./pages/ProductManagement/index.jsx";
 import Dashboard from "./components/Dashboard/index.jsx";
 import ModalLogin from "./components/ModalLogin/index.jsx";
 import ModalRegister from "./components/ModalRegister/index.jsx";
+import CategoryManagement from "./pages/CategoryManagement/index.jsx";
+import OrderManagement from "./pages/OrderManagement/index.jsx";
+import { setCategories } from "./redux/features/commonDataSlice/commonDataSlice.js";
 
 const LayOut = () => {
   return (
@@ -71,6 +74,21 @@ function App() {
       dispatch(setLoading(false));
     }
   }, []);
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  const getCategories = async () => {
+    try {
+      const res = await callGetCategories();
+      if (res?.vcode === 0) {
+        dispatch(setCategories(res.data));
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const router = createBrowserRouter([
     {
@@ -119,6 +137,14 @@ function App() {
         {
           path: "product",
           element: <ProductManagement />,
+        },
+        {
+          path: "category",
+          element: <CategoryManagement />,
+        },
+        {
+          path: "order",
+          element: <OrderManagement />,
         },
       ],
     },

@@ -36,10 +36,12 @@ import { logout } from "../../redux/features/user/userSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const { categories } = useSelector((state) => state.commonData);
   const [current, setCurrent] = useState("mail");
   const [isShowGroupIconFix, setIsShowGroupIconFix] = useState(false);
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.account);
+  const [menuItem, setMenuItem] = useState([]);
 
   const handleLogout = async () => {
     try {
@@ -77,32 +79,14 @@ const Header = () => {
       : []),
   ];
 
-  const menuItem = [
-    {
-      label: <Link to={"category/non-ket"}>NÓN KẾT</Link>,
-      key: "1",
-    },
-    {
-      label: <Link to={"category/non-da"}>NÓN DA</Link>,
-      key: "2",
-    },
-    {
-      label: <Link to={"category/non-dan-tay"}>NÓN ĐAN TAY</Link>,
-      key: "3",
-    },
-    {
-      label: <Link to={"category/non-vanh"}>NÓN VÀNH</Link>,
-      key: "4",
-    },
-    {
-      label: <Link to={"category/non-phot"}>NÓN PHỚT</Link>,
-      key: "5",
-    },
-    {
-      label: <Link to={"category/non-tre-em"}>NÓN TRẺ EM</Link>,
-      key: "6",
-    },
-  ];
+  useEffect(() => {
+    setMenuItem(
+      categories.map((item) => ({
+        label: <Link to={"category/" + item.link}>{item.name}</Link>,
+        key: item._id,
+      }))
+    );
+  }, [categories]);
 
   const modalAuth = [
     {

@@ -2,48 +2,11 @@ import Carousel from "react-multi-carousel";
 import { Link } from "react-router-dom";
 import Meta from "antd/es/card/Meta";
 import { Card, Divider, Image, Typography } from "antd";
-import nonvanh from "../../assets/images/non_vanh.jpg";
 import styles from "./CategoriesProduct.module.css";
+import { useSelector } from "react-redux";
 
 const CategoriesProduct = () => {
-  const products = [
-    {
-      _id: 1,
-      name: "Nón vành",
-      img: nonvanh,
-    },
-    {
-      _id: 2,
-      name: "Nón vành",
-      img: nonvanh,
-    },
-    {
-      _id: 3,
-      name: "Nón vành",
-      img: nonvanh,
-    },
-    {
-      _id: 4,
-      name: "Nón vành",
-      img: nonvanh,
-    },
-    {
-      _id: 5,
-      name: "Nón vành",
-      img: nonvanh,
-    },
-    {
-      _id: 6,
-      name: "Nón vành",
-      img: nonvanh,
-    },
-    {
-      _id: 7,
-      name: "Nón vành",
-      img: nonvanh,
-    },
-  ];
-
+  const { categories } = useSelector((state) => state.commonData);
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 1500 },
@@ -71,14 +34,19 @@ const CategoriesProduct = () => {
         Chất lượng, đẳng cấp và tinh tế thể hiện ở từng sản phẩm
       </Typography.Text>
       <Carousel responsive={responsive}>
-        {products.map((item) => (
-          <Link key={item._id} to={"category/" + item._id}>
-            <Card hoverable className={styles.cardContainer}>
-              <Image className={styles.img} preview={false} src={item.img} />
-              <Meta title={item.name} description="100.000đ" />
-            </Card>
-          </Link>
-        ))}
+        {categories &&
+          categories.map((item) => (
+            <Link key={item._id} to={"category/" + item.link}>
+              <Card hoverable className={styles.cardContainer}>
+                <Image
+                  className={styles.img}
+                  preview={false}
+                  src={import.meta.env.VITE_BASE_URL + "/uploads/images/category/" + item.thumb}
+                />
+                <Typography.Title level={4}>{item.name}</Typography.Title>
+              </Card>
+            </Link>
+          ))}
       </Carousel>
       <Divider />
     </>
