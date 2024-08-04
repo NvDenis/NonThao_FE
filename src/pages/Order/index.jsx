@@ -1,4 +1,15 @@
-import { Button, Card, Result, Col, Divider, Image, InputNumber, Row, Steps, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Result,
+  Col,
+  Divider,
+  Image,
+  InputNumber,
+  Row,
+  Steps,
+  Typography,
+} from "antd";
 import styles from "./Order.module.css";
 import { useState } from "react";
 import Cart from "../../components/Cart";
@@ -7,6 +18,7 @@ import ProductChooses from "../../components/ProductChooses";
 import CheckoutPayment from "../../components/CheckoutPayment";
 import { SmileOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const cart = [
   {
@@ -27,6 +39,7 @@ const cart = [
 
 const Order = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const { user } = useSelector((state) => state.account);
   return (
     <>
       <Card className={styles.cardStep}>
@@ -77,7 +90,7 @@ const Order = () => {
               span: 16,
             }}
           >
-            {currentStep == 1 && <Cart cart={cart} />}
+            {currentStep == 1 && <Cart cart={user.cart} />}
             {currentStep == 2 && <ProductChooses />}
           </Col>
           <Col

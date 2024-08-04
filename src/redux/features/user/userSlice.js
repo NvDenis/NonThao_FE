@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   user: null,
   isLoading: true,
-  cart: localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : [],
 };
 
 export const userSlice = createSlice({
@@ -20,14 +19,24 @@ export const userSlice = createSlice({
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
-    addCartLocal: (state, action) => {
-      if (action.payload.type == "add") {
+    addToCart: (state, action) => {
+      const findProduct = state.user.cart.find((item) => item._id === action.payload._id);
+      if (findProduct) {
+        findProduct.quantity += action.payload.quantity;
+      } else {
+        state.user.cart.push(action.payload);
+      }
+    },
+    updateCart: (state, action) => {
+      const findProduct = state.user.cart.find((item) => item._id === action.payload._id);
+      if (findProduct) {
+        findProduct.quantity = action.payload.quantity;
       }
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setCredentials, logout, setLoading } = userSlice.actions;
+export const { setCredentials, logout, setLoading, addToCart, updateCart } = userSlice.actions;
 
 export default userSlice.reducer;

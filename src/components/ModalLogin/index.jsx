@@ -1,7 +1,6 @@
-import { Card, Divider, Modal, Typography, message } from "antd";
+import { Divider, Modal, Typography, message } from "antd";
 import styles from "./ModalLogin.module.css";
 import { Button, Form, Input } from "antd";
-import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { callLogin } from "../../services/api";
 import { setCredentials } from "../../redux/features/user/userSlice";
@@ -9,7 +8,6 @@ import { toggleModalLogin, toggleModalRegister } from "../../redux/features/togg
 
 const ModalLogin = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const onFinish = async (values) => {
     try {
       const res = await callLogin(values);
@@ -17,7 +15,6 @@ const ModalLogin = () => {
         dispatch(setCredentials(res.data));
         localStorage.setItem("accessToken", res.data.accessToken);
         message.success(res.message);
-        navigate("/account");
         dispatch(toggleModalLogin());
       } else message.error(res.message);
     } catch (error) {

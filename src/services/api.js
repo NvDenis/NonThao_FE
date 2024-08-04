@@ -44,6 +44,22 @@ export const callGetProductByCategory = async (id) => {
   return await axios.get(`/product/category/${id}`);
 };
 
+export const callGetProductByLink = async (link) => {
+  return await axios.get(`/product/link/${link}`);
+};
+
+export const callAddToCart = async (data) => {
+  return await axios.post("/user/cart", data);
+};
+
+export const callRemoveCartItem = async (id) => {
+  return await axios.delete(`/user/cart/${id}`);
+};
+
+export const callUpdateCartItem = async (id, data) => {
+  return await axios.put(`/user/cart/${id}`, data);
+};
+
 /**
  * nếu upload thì truyền vào fileImg, sửa ảnh thì truyền vào oldImg để server không bị rác
  * @param fileImg

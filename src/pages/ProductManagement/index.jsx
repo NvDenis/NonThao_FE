@@ -4,10 +4,14 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import ModalAddProduct from "../../components/ModalAddProduct";
 import { callDeleteProduct, callFetchProduct, callGetCategories } from "../../services/api";
-import { toggleModalAddProduct } from "../../redux/features/toggle/toggleSlice";
+import {
+  toggleModalAddProduct,
+  toggleModalEditProduct,
+} from "../../redux/features/toggle/toggleSlice";
 import Search from "antd/es/input/Search";
 import styles from "./ProductManagement.module.css";
 import formatPrice from "../../utils/formatPrice";
+import ModalEditProduct from "../../components/ModalEditProduct";
 
 const ProductManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +21,7 @@ const ProductManagement = () => {
   const [total, setTotal] = useState(0);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [productEdit, setProductEdit] = useState();
 
   const columns = [
     {
@@ -62,11 +67,15 @@ const ProductManagement = () => {
       title: " Thao tác",
       dataIndex: "_id",
       key: "_id",
-      render: (_id) => (
+      render: (_id, record) => (
         <Space>
           <EditOutlined
             style={{
               color: "orange",
+            }}
+            onClick={() => {
+              setProductEdit(record);
+              dispatch(toggleModalEditProduct());
             }}
           />
 
@@ -104,7 +113,6 @@ const ProductManagement = () => {
         const products = res.data.result.map((item) => ({
           ...item,
           key: item._id,
-          image: import.meta.env.VITE_BASE_URL + "/uploads/images/hat/" + item.image,
         }));
         setProducts(products);
         setTotal(res.data.meta.total);
@@ -158,6 +166,11 @@ const ProductManagement = () => {
       />
 
       <ModalAddProduct setProducts={setProducts} categories={categories} />
+      <ModalEditProduct
+        setProducts={setProducts}
+        categories={categories}
+        productEdit={productEdit}
+      />
     </div>
   );
 };

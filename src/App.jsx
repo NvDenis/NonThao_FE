@@ -105,7 +105,7 @@ function App() {
           element: <Order />,
         },
         {
-          path: "/product/:id",
+          path: "/product/:link",
           element: <ProductDetail />,
         },
         {

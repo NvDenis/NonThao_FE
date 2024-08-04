@@ -23,7 +23,7 @@ const CategoryManagement = () => {
   const dispatch = useDispatch();
   const [categories, setCategories] = useState([]);
   const [categoryEdit, setCategoryEdit] = useState();
-
+  console.log("categories", categories);
   const handleDeleteCategory = async (_id) => {
     try {
       const res = await callDeleteCategory(_id);

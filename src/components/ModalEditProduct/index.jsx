@@ -19,27 +19,32 @@ import {
   message,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
-import { DeleteOutlined, EditOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import styles from "./ModalAddProduct.module.css";
-import { toggleModalAddProduct } from "../../redux/features/toggle/toggleSlice";
+import { useEffect, useState } from "react";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import styles from "./ModalEditProduct.module.css";
+import {
+  toggleModalAddProduct,
+  toggleModalEditProduct,
+} from "../../redux/features/toggle/toggleSlice";
 import DescProduct from "../DescProduct";
 import formatPrice from "../../utils/formatPrice";
 import ModalAddUnit from "../ModalAddUnit";
 import ModalEditUnit from "../ModalEditUnit";
-import { callCreateProduct } from "../../services/api";
+import { callUpdateProduct } from "../../services/api";
 import generateUniqueCode from "../../utils/generateUniqueCode";
 import convertToSlug from "../../utils/convertSlug";
 
-const ModalAddProduct = ({ categories, setProducts }) => {
+const ModalEditProduct = ({ categories, setProducts, productEdit }) => {
   const dispatch = useDispatch();
-  const { modalAddProduct } = useSelector((state) => state.toggle);
+  const { modalEditProduct } = useSelector((state) => state.toggle);
   const [descProductValue, setDescProductValue] = useState("");
   const [isShowModalAddUnit, setIsShowModalAddUnit] = useState(false);
   const [isShowModalEditUnit, setIsShowModalEditUnit] = useState(false);
   const [units, setUnits] = useState([]);
   const [unitEdit, setUnitEdit] = useState([]);
   const [costPrice, setCostPrice] = useState("");
+  const [form] = Form.useForm();
+  console.log("units", units);
 
   const items = [
     {
@@ -61,11 +66,7 @@ const ModalAddProduct = ({ categories, setProducts }) => {
       title: "Màu sắc",
       dataIndex: "color",
       key: "color",
-      render: (color) => (
-        <>
-          <ColorPicker value={color} open={false} />
-        </>
-      ),
+      render: (color) => <ColorPicker value={color} open={false} />,
       width: 200,
     },
     {
@@ -96,24 +97,27 @@ const ModalAddProduct = ({ categories, setProducts }) => {
   const onFinish = async (values) => {
     const data = {
       ...values,
-      name: generateUniqueCode(values.name.trim()),
+      name: values.name.trim(),
       costPrice: Number(costPrice.replace(/\,/g, "")),
       units: units.map((unit) => {
         return {
           ...unit,
-          price: Number(unit.price.replace(/\,/g, "")),
+          price: Number(unit.price.toString().replace(/\,/g, "")),
           images: unit.images.map((image) => image.name),
         };
       }),
       desc: descProductValue,
-      link: convertToSlug(generateUniqueCode(values.name.trim())),
     };
+    // console.log("check data", data);
+    // return;
 
     try {
-      const res = await callCreateProduct(data);
+      const res = await callUpdateProduct(productEdit._id, data);
       if (res.vcode == 0) {
-        setProducts((pre) => [...pre, { ...res.data, key: res.data._id }]);
-        dispatch(toggleModalAddProduct());
+        setProducts((pre) =>
+          pre.map((product) => (product._id === productEdit._id ? res.data : product))
+        );
+        dispatch(toggleModalEditProduct());
         message.success(res.message);
       } else message.error(res.message);
     } catch (error) {
@@ -125,24 +129,46 @@ const ModalAddProduct = ({ categories, setProducts }) => {
     setUnits((pre) => pre.filter((unit) => unit.key !== id));
   };
 
+  useEffect(() => {
+    if (productEdit) {
+      console.log("productEdit", productEdit);
+      console.log("productEdit.costPrice", productEdit.costPrice);
+      setCostPrice(formatPrice(productEdit.costPrice.toString()));
+      setDescProductValue(productEdit.desc);
+      setUnits(
+        productEdit.units.map((unit) => ({
+          ...unit,
+          key: unit._id,
+          images: unit.images.map((item) => {
+            return {
+              uid: item,
+              url: import.meta.env.VITE_BASE_URL + "/uploads/images/hat/" + item,
+              status: "done",
+            };
+          }),
+        }))
+      );
+      form.setFieldsValue({
+        name: productEdit.name,
+        status: productEdit.status,
+        id_category: productEdit.id_category,
+        active: productEdit.active,
+        status: productEdit.status,
+      });
+    }
+  }, [productEdit]);
+
   return (
     <Modal
-      title="Thêm sản phẩm"
-      open={modalAddProduct}
-      onCancel={() => dispatch(toggleModalAddProduct())}
+      title="Cập nhật sản phẩm"
+      open={modalEditProduct}
+      onCancel={() => dispatch(toggleModalEditProduct())}
       footer={null}
       style={{
         minWidth: "70%",
       }}
     >
-      <Form
-        className={styles.form}
-        onFinish={onFinish}
-        initialValues={{
-          status: true,
-          active: true,
-        }}
-      >
+      <Form className={styles.form} onFinish={onFinish} form={form}>
         <Row
           gutter={[
             {
@@ -211,8 +237,8 @@ const ModalAddProduct = ({ categories, setProducts }) => {
                 style={{ width: "100%" }}
                 options={[
                   ...categories.map((category) => ({
-                    value: category._id,
-                    label: category.name,
+                    value: category?._id,
+                    label: category?.name,
                   })),
                 ]}
               />
@@ -249,7 +275,7 @@ const ModalAddProduct = ({ categories, setProducts }) => {
 
         <Form.Item style={{ textAlign: "right", marginTop: "10px" }}>
           <Button type="primary" htmlType="submit">
-            Thêm sản phẩm
+            Cập nhật sản phẩm
           </Button>
         </Form.Item>
       </Form>
@@ -268,4 +294,4 @@ const ModalAddProduct = ({ categories, setProducts }) => {
     </Modal>
   );
 };
-export default ModalAddProduct;
+export default ModalEditProduct;

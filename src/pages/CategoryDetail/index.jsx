@@ -66,7 +66,7 @@ const CategoryDetail = () => {
           </div>
           <div className={styles.containerProducts}>
             {products.map((item) => (
-              <Link key={item._id} to={"/product/" + item._id}>
+              <Link key={item._id} to={"/product/" + item.link}>
                 <Card hoverable className={styles.cardContainer}>
                   <Image
                     preview={false}

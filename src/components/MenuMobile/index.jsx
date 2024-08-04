@@ -11,6 +11,7 @@ import { logout } from "../../redux/features/user/userSlice";
 
 const MenuMobile = () => {
   const { menuMobile } = useSelector((state) => state.toggle);
+  const { categories } = useSelector((state) => state.commonData);
   const { user } = useSelector((state) => state.account);
   const dispatch = useDispatch();
 
@@ -29,30 +30,12 @@ const MenuMobile = () => {
   };
 
   const items = [
-    {
-      label: <Link to={"category/non-ket"}>NÓN KẾT</Link>,
-      key: "1",
-    },
-    {
-      label: <Link to={"category/non-da"}>NÓN DA</Link>,
-      key: "2",
-    },
-    {
-      label: <Link to={"category/non-dan-tay"}>NÓN ĐAN TAY</Link>,
-      key: "3",
-    },
-    {
-      label: <Link to={"category/non-vanh"}>NÓN VÀNH</Link>,
-      key: "4",
-    },
-    {
-      label: <Link to={"category/non-phot"}>NÓN PHỚT</Link>,
-      key: "5",
-    },
-    {
-      label: <Link to={"category/non-tre-em"}>NÓN TRẺ EM</Link>,
-      key: "6",
-    },
+    ...categories.map((item) => {
+      return {
+        label: <Link to={`category/${item.link}`}>{item.name.toUpperCase()}</Link>,
+        key: item._id,
+      };
+    }),
     {
       type: "divider",
     },

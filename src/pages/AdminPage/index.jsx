@@ -65,6 +65,10 @@ const AdminPage = () => {
   };
   const popoverItems = [
     {
+      key: "home",
+      label: <Link to="/">Trang chủ</Link>,
+    },
+    {
       key: "profile",
       label: <Link to="/account">Quản lý tài khoản</Link>,
     },

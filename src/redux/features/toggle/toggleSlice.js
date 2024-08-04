@@ -4,6 +4,7 @@ const initialState = {
   cartDrawer: false,
   menuMobile: false,
   modalAddProduct: false,
+  modalEditProduct: false,
   modalLogin: false,
   modalRegister: false,
   modalAddCategory: false,
@@ -35,6 +36,9 @@ export const toggleSlice = createSlice({
     toggleModalEditCategory: (state) => {
       state.modalEditCategory = !state.modalEditCategory;
     },
+    toggleModalEditProduct: (state) => {
+      state.modalEditProduct = !state.modalEditProduct;
+    },
   },
 });
 
@@ -47,6 +51,7 @@ export const {
   toggleModalRegister,
   toggleModalAddCategory,
   toggleModalEditCategory,
+  toggleModalEditProduct,
 } = toggleSlice.actions;
 
 export default toggleSlice.reducer;

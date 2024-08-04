@@ -15,7 +15,7 @@
 
 .container :global(.ant-input-number-group-addon) {
   border-radius: 0 !important;
-  padding: 15px;
+  padding: 0;
 }
 
 .container :global(.ant-input-number-input) {
