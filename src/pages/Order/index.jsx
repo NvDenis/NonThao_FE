@@ -90,7 +90,7 @@ const Order = () => {
               span: 16,
             }}
           >
-            {currentStep == 1 && <Cart cart={user.cart} />}
+            {currentStep == 1 && <Cart cart={user?.cart || []} />}
             {currentStep == 2 && <ProductChooses />}
           </Col>
           <Col

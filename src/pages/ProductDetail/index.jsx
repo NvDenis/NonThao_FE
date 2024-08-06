@@ -4,20 +4,11 @@ import styles from "./ProductDetail.module.css";
 import Title from "antd/es/typography/Title";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  BorderRightOutlined,
-  MinusOutlined,
-  PlusOutlined,
-  ShoppingCartOutlined,
-} from "@ant-design/icons";
+import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import non_ket_1 from "../../assets/images/non_ket_1.jpg";
-import non_ket_2 from "../../assets/images/non_ket_2.jpg";
-import non_ket_3 from "../../assets/images/non_ket_3.jpg";
-import non_ket_4 from "../../assets/images/non_ket_4.jpg";
 import { callAddToCart, callGetProductByLink } from "../../services/api";
 import { toggleModalLogin } from "../../redux/features/toggle/toggleSlice";
-import { addToCart } from "../../redux/features/user/userSlice";
+import { addToCart, updateCart } from "../../redux/features/user/userSlice";
 
 const ProductDetail = () => {
   const { user } = useSelector((state) => state.account);
@@ -27,12 +18,20 @@ const ProductDetail = () => {
   const { link } = useParams();
   const [quantity, setQuantity] = useState(1);
   const [unitActive, setUnitActive] = useState();
+  const key = "updatable";
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleAddToCart = async () => {
     if (!user) {
       dispatch(toggleModalLogin());
     } else {
       try {
+        messageApi.open({
+          key,
+          type: "loading",
+          content: "Loading...",
+          duration: 0,
+        });
         const data = {
           product: product._id,
           name: product.name,
@@ -44,8 +43,15 @@ const ProductDetail = () => {
 
         const res = await callAddToCart(data);
         if (res.vcode == 0) {
-          message.success(res.message);
-          dispatch(addToCart(data));
+          setTimeout(() => {
+            dispatch(updateCart(res.data));
+            messageApi.open({
+              key,
+              type: "success",
+              content: res.message,
+              duration: 2,
+            });
+          }, 1000);
         } else message.error(res.message);
       } catch (error) {
         console.error("error", error.message);
@@ -76,6 +82,7 @@ const ProductDetail = () => {
 
   return (
     <Row gutter={32} className={styles.container}>
+      {contextHolder}
       {unitActive && (
         <>
           <Col

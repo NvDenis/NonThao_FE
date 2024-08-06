@@ -2,13 +2,18 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { Divider, Image, message } from "antd";
 import formatPrice from "../../utils/formatPrice";
 import { callRemoveCartItem } from "../../services/api";
+import { updateCart } from "../../redux/features/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const CartItemDrawer = ({ item }) => {
+  const dispatch = useDispatch();
   const handleRemoveCartItem = async (id) => {
     try {
       const res = await callRemoveCartItem(id);
+      console.log("check res", res);
       if (res.vcode == 0) {
         message.success(res.message);
+        dispatch(updateCart(res.data));
       } else message.error(res.message);
     } catch (error) {
       console.error("error", error.message);

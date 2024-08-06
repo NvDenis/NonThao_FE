@@ -27,11 +27,14 @@ export const userSlice = createSlice({
         state.user.cart.push(action.payload);
       }
     },
+    // updateCart: (state, action) => {
+    //   const findProduct = state.user.cart.find((item) => item._id === action.payload._id);
+    //   if (findProduct) {
+    //     findProduct.quantity = action.payload.quantity;
+    //   }
+    // },
     updateCart: (state, action) => {
-      const findProduct = state.user.cart.find((item) => item._id === action.payload._id);
-      if (findProduct) {
-        findProduct.quantity = action.payload.quantity;
-      }
+      state.user.cart = action.payload;
     },
   },
 });
