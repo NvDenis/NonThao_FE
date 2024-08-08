@@ -107,9 +107,10 @@ const ModalEditProduct = ({ categories, setProducts, productEdit }) => {
         };
       }),
       desc: descProductValue,
+      link: convertToSlug(values.name.trim()),
     };
-    // console.log("check data", data);
-    // return;
+
+    console.log("data", data);
 
     try {
       const res = await callUpdateProduct(productEdit._id, data);
