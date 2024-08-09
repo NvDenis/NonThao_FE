@@ -2,6 +2,10 @@ const formatPrice = (value) => {
   if (!value) {
     console.error("Value not valid", value);
   }
+  if (typeof value === "number") {
+    value = value.toString();
+  }
+
   // Bước 1: Loại bỏ ký tự không phải số
   const numericValue = value.replace(/\D/g, "");
 

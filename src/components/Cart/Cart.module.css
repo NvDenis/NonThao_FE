@@ -36,7 +36,6 @@
 .title2 {
   display: none;
   margin: 0;
-  width: 100px;
 }
 
 .checkBox {
@@ -51,8 +50,13 @@
     display: none !important;
   }
   .groupSum {
+    flex: 2;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+  }
+
+  .sumProduct {
+    display: none;
   }
 }

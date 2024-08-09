@@ -1,6 +1,9 @@
 import { Button, Card, Divider } from "antd";
 import styles from "./CheckoutOrder.module.css";
+import { useSelector } from "react-redux";
 const CheckoutOrder = ({ setCurrentStep }) => {
+  const { cart } = useSelector((state) => state.account.user);
+
   return (
     <Card>
       <div className={styles.row}>
@@ -15,7 +18,12 @@ const CheckoutOrder = ({ setCurrentStep }) => {
       </div>
       <Divider />
 
-      <Button type="primary" className={styles.btnOrder} onClick={() => setCurrentStep((pre) => (pre += 1))}>
+      <Button
+        type="primary"
+        disabled={!cart.some((item) => item.checked)}
+        className={styles.btnOrder}
+        onClick={() => setCurrentStep((pre) => (pre += 1))}
+      >
         Mua hàng
       </Button>
     </Card>

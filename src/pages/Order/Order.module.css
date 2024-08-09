@@ -1,3 +1,16 @@
 .cardStep {
   margin-bottom: 20px;
 }
+
+.checkOutOrder {
+  position: sticky;
+  position: -webkit-sticky;
+  bottom: 0;
+  width: 100%;
+}
+
+.checkOutOrderCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

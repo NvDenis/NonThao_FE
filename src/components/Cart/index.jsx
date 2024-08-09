@@ -4,7 +4,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import formatPrice from "../../utils/formatPrice";
 import { callUpdateCartItem } from "../../services/api";
 import { useDispatch } from "react-redux";
-import { updateCart } from "../../redux/features/user/userSlice";
+import { chooseProduct, updateCart } from "../../redux/features/user/userSlice";
 
 const Cart = ({ cart }) => {
   const dispatch = useDispatch();
@@ -18,6 +18,10 @@ const Cart = ({ cart }) => {
       console.error(error.message);
     }
   };
+
+  const handleChooseProduct = (item) => {
+    dispatch(chooseProduct({ _id: item._id }));
+  };
   return (
     <>
       {cart &&
@@ -26,7 +30,11 @@ const Cart = ({ cart }) => {
             <Card key={item._id} span={24} style={{ marginBottom: "10px" }}>
               <div className={styles.cardContainer}>
                 <div className={styles.groupImage}>
-                  <Checkbox className={styles.checkBox} />
+                  <Checkbox
+                    checked={item.checked}
+                    className={styles.checkBox}
+                    onClick={() => handleChooseProduct(item)}
+                  />
                   <Image
                     className={styles.imageProduct}
                     src={import.meta.env.VITE_BASE_URL + "/uploads/images/hat/" + item.images[0]}
